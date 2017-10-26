@@ -47,7 +47,8 @@ class NeuralNetwork:
 
     def query(self, ip):
 
-        ip.append(1)  # bias
+        ip.append(1)
+        # bias
         answers = self.forward_propogation(ip)
         # print answers
         language = answers.index(max(answers))
@@ -98,7 +99,8 @@ class NeuralNetwork:
         val_in, val_op = get_example_set(val_files)
         train_error_list, val_err_list = [], []
 
-        for ip in train_in: ip.append(1)  # bias
+        for ip in train_in: ip.append(1)
+        # bias
 
         for epoch in range(epochs):
             error = 0.0
@@ -140,7 +142,30 @@ class NeuralNetwork:
         for ip in train_in: ip.pop()
         return train_error_list, val_err_list
 
+def get_count(text):
+    words = text.split()
+    count=0
+    vowels = ['a', 'e', 'i', 'o', 'u']
+    cons = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','x','y','z']
+    for word in words:
+        ch=word[0]
+        for i in range(1,len(word)-1,1):
+            if word[i] in vowels and word[i-1] in cons:
+                count+=1
+                break
+    return count
+            
+def xx_count(text):
+    words = text.split()
+    count=0
+    vowels = ['a', 'e', 'i', 'o', 'u']
+    for word in words:
+        ch=word[len(word)-1]
+        if ch in vowels:
+            count+=1
+    return count
 
+    
 def eval_text(text):
     words = text.split()
     if len(words) == 0:
@@ -164,10 +189,10 @@ def eval_text(text):
 
     raw_features[1] = text.count('en')  # bigram en.
     # Repeated letters for mostly dutch.
-    raw_features[2] += len(re.findall(r'(.)\1', text))
+    raw_features[2] += 4 * get_count(text)
 
     # ij pretty much NEVER shows up anywhere ever except Dutch!
-    raw_features[2] += 4 * text.count('ij')
+    raw_features[2] += xx_count(text)
 
     # 'th' for english as most frequent bigram
     raw_features[3] = 2 * text.count('th')
@@ -258,7 +283,7 @@ def train_mode():
 
 def main():
 
-    read_from_file_and_test = True
+    read_from_file_and_test = False
 
     if read_from_file_and_test:
         test_mode()
